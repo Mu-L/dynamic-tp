@@ -84,11 +84,14 @@ public class DtpBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar
         BinderHelper.bindDtpProperties(environment, dtpProperties);
         val executors = dtpProperties.getExecutors();
         if (CollectionUtils.isEmpty(executors)) {
-            log.warn("DynamicTp registrar, no executors are configured.");
+            log.info("DynamicTp registrar, no executors are configured.");
             return;
         }
 
         executors.forEach(e -> {
+            if (!e.isAutoCreate()) {
+                return;
+            }
             Class<?> executorTypeClass = ExecutorType.getClass(e.getExecutorType());
             Map<String, Object> propertyValues = buildPropertyValues(e);
             Object[] args = buildConstructorArgs(executorTypeClass, e);
